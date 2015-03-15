@@ -6,7 +6,13 @@
     <title>Myapp</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      var is_nodewebkit = (typeof process == "object");
 
+      if (is_nodewebkit) {
+        window.node_require = window.require;
+      }
+    </script>
     {{content-for 'head'}}
 
     <link rel="stylesheet" href="assets/vendor.css">
@@ -21,5 +27,20 @@
     <script src="assets/myapp.js"></script>
 
     {{content-for 'body-footer'}}
+    <script>
+      var is_nodewebkit = (typeof process == "object");
+
+      if (is_nodewebkit) {
+        window.ember_require = window.require;
+
+        window.require = function(module) {
+          try {
+            return window.ember_require(module);
+          } catch (e) {
+            return window.node_require(module);
+          }
+        }
+      }
+    </script>
   </body>
 </html>
